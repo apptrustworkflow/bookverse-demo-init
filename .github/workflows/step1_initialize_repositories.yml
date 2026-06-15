@@ -119,7 +119,11 @@ jobs:
           jf evd generate-key-pair --key-alias "${EVIDENCE_KEY_ALIAS}" --key-file-name "${EVIDENCE_KEY_ALIAS}" --key-file-path "./keys" --upload-public-key="false"
           echo ".."
           # FIXME: This should probably be moved to the "Step 2: Setup Platform" workflow.
-          upload_evidence_key_to_jfrog "./keys/${EVIDENCE_KEY_ALIAS}.pub" "${EVIDENCE_KEY_ALIAS}"
+          #upload_evidence_key_to_jfrog "./keys/${EVIDENCE_KEY_ALIAS}.pub" "${EVIDENCE_KEY_ALIAS}"
+          which jq
+          local payload
+          payload=`jq -n --arg alias "${EVIDENCE_KEY_ALIAS}" --arg public_key "$(cat ./keys/${EVIDENCE_KEY_ALIAS}.pub)" '{"alias": $alias, "public_key": $public_key}' 2>/dev/null`
+          curl -s -X POST -H "Authorization: Bearer $JF_ADMIN_TOKEN" -H "Content-Type: application/json" -d "$payload" "$JF_URL/artifactory/api/security/keys/trusted"
           echo "..."
           gh secret set "EVIDENCE_PRIVATE_KEY" --body "$(cat ./keys/${EVIDENCE_KEY_ALIAS}.key)" --repo "${{ github.repository_owner }}/bookverse-demo-init"
           echo "...."
