@@ -121,7 +121,7 @@ jobs:
           #upload_evidence_key_to_jfrog "./keys/${EVIDENCE_KEY_ALIAS}.pub" "${EVIDENCE_KEY_ALIAS}"
           which jq
           PAYLOAD=`jq -n --arg alias "${EVIDENCE_KEY_ALIAS}" --arg public_key "$(cat ./keys/${EVIDENCE_KEY_ALIAS}.pub)" '{"alias": $alias, "public_key": $public_key}' 2>/dev/null`
-          RESPONSE=curl -s  -w "%{http_code}" -X POST -H "Authorization: Bearer $JF_ACCESS_TOKEN" -H "Content-Type: application/json" -d "${PAYLOAD}" "$JF_URL/artifactory/api/security/keys/trusted"
+          RESPONSE=`curl -s  -w "%{http_code}" -X POST -H "Authorization: Bearer $JF_ACCESS_TOKEN" -H "Content-Type: application/json" -d "${PAYLOAD}" "$JF_URL/artifactory/api/security/keys/trusted"`
           echo "${RESPONSE}"
           gh secret set "EVIDENCE_PRIVATE_KEY" --body "$(cat ./keys/${EVIDENCE_KEY_ALIAS}.key)" --repo "${{ github.repository_owner }}/bookverse-demo-init"
           # FIXME: Should the following be secrets or variables?
