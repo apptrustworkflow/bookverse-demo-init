@@ -23,7 +23,6 @@ env:
   JF_URL: ${{ vars.JFROG_URL }}
   JF_ACCESS_TOKEN: ${{ secrets.JFROG_ADMIN_TOKEN }}
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
-  GH_ORG: ${{ github.repository_owner }}
   COMPONENTS: "checkout demo-assets demo-init helm infra inventory platform recommendations web"
   JFROG_CLI_AVOID_NEW_VERSION_WARNING: "TRUE"
 
@@ -77,6 +76,8 @@ jobs:
           fi
 
       - name: Verify Git Repository Forks
+        env:
+          GH_ORG: ${{ github.repository_owner }}
         run: |
           echo "Forking the needed repositories into organization ${GH_ORG}"
           # skipping bookverse-demo-init as this should already be forked to run this action
