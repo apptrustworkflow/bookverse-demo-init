@@ -96,6 +96,7 @@ jobs:
               else
                 echo "Owner appears to be org"
                 gh repo fork bookverse-example/bookverse-${item} --org ${ORGANIZATION} --fork-name bookverse-${item}
+              fi
             fi
           done
 
